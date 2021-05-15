@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +40,17 @@ public class FlightControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].Tickets[0].Price", is(200)))
                 .andExpect(jsonPath("$[1].Tickets[0].Price", is(400)));
+    }
+
+    @Test
+    public void testGetFlightsCheckLastNameIsNotIncluded() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/flights")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        this.mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].Tickets[0].Passenger.LastName", is(nullValue())));
     }
 
 
